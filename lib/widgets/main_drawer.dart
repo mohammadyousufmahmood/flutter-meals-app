@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meal_app/main.dart';
-
 class MainDrawer extends StatelessWidget {
 
   const MainDrawer({super.key});

@@ -19,7 +19,7 @@ class CategoryGridItem extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (ctx) => MealsScreen(
-              title: category.title,
+             title: category.title,
               meals: dummyMeals.where((meal) => meal.categories.contains(category.id)).toList(),
             ),
           ),

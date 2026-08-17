@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:meal_app/screens/categories.dart';
 import 'package:meal_app/screens/meals.dart';
 import 'package:meal_app/data/dummy_data.dart';
+import 'package:meal_app/widgets/main_drawer.dart';
+import 'package:meal_app/models/meal.dart';
 
 
 class TabsScreen extends StatefulWidget {
@@ -21,14 +23,31 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  // Getter that returns a function which filters meals by a provided predicate.
+  // List<Meal> Function(bool Function(Meal)) get filteredMeals =>
+  //     (bool Function(Meal) test) => dummyMeals.where(test).toList();
+
+List<Meal> filteredMeals(bool Function(Meal) condition) 
+        => dummyMeals.where(condition).toList();
+
   @override
   Widget build(BuildContext context) {
     Widget activePage = CategoriesScreen();
+    String activePageTitle = 'Categories';
 
     if(_selectedPageIndex == 1 ){
-      activePage = MealsScreen(title: 'Favorites', meals: dummyMeals.where((meal) => meal.isFavorite).toList() ); // Replace with actual meals for the favorites
+      activePage = MealsScreen(meals: filteredMeals((meal) => meal.isFavorite));
+      activePageTitle = 'Favorites';
     }
+    
+
     return Scaffold(
+      appBar: AppBar(
+        title: Text(activePageTitle),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+      ),
+      drawer: MainDrawer(),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
@@ -40,7 +59,7 @@ class _TabsScreenState extends State<TabsScreen> {
             label: 'Categories',
           ),
           BottomNavigationBarItem(
-            activeIcon: Icon(Icons.star_rounded),
+            activeIcon: Icon(Icons.star_sharp),
             icon: Icon(Icons.star_outline),
             label: 'Favorites',
           ),

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:meal_app/data/dummy_data.dart';
+import 'package:meal_app/screens/filters_screen.dart';
 import 'package:meal_app/widgets/category_grid_item.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen(this.filters, {super.key});
+
+  final Map<Filter, bool>? filters;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,16 @@ class CategoriesScreen extends StatelessWidget {
         children: [
           // availableCategories.map((category) => CategoryGridItem(category: category)).toList()
           for (final category in availableCategories)
-            CategoryGridItem(category: category)
+            CategoryGridItem(
+              category: category,
+              filters:
+                  filters ??
+                  const {
+                    Filter.gluttonFree: false,
+                    Filter.lactoseFree: false,
+                    Filter.vegetarian: false,
+                  },
+            ),
         ],
       ),
     );

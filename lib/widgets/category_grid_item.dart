@@ -18,27 +18,14 @@ class CategoryGridItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filteredMeals = ref.watch(filteredMealsProvider(category.id));
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (ctx) => MealsScreen(
               title: category.title,
-              meals: dummyMeals.where((meal) {
-                final activeFilters = ref.watch(filtersProvider);
-                if (!meal.categories.contains(category.id)) return false;
-                if (activeFilters[Filter.gluttonFree]! && !meal.isGlutenFree) {
-                  return false;
-                }
-                if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
-                  return false;
-                }
-                if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
-                  return false;
-                }
-
-                return true;
-              }).toList(),
+              meals: filteredMeals,
             ),
           ),
         );

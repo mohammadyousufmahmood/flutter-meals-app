@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meal_app/models/filters.dart';
 
-
-enum Filter {
-  gluttonFree,
-  lactoseFree,
-  vegetarian
-}
 
 class FiltersScreen extends StatefulWidget {
   const FiltersScreen({super.key, required this.selectedFilters});
@@ -35,14 +30,14 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Your Filters')),
-      body: WillPopScope(
-        onWillPop: () async {
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
           Navigator.of(context).pop({
             Filter.gluttonFree: _gluttonFreeFilterSet,
             Filter.lactoseFree: _lactoseFreeFilterSet,
             Filter.vegetarian:  _vegetarianFreeFilterSet
           });
-          return false;
         },
         child: Column(
           children: [

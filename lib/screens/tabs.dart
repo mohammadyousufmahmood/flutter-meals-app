@@ -1,6 +1,5 @@
     import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meal_app/models/filters.dart';
 import 'package:meal_app/providers/favorite_meals_provider.dart';
     import 'package:meal_app/screens/categories.dart';
     import 'package:meal_app/screens/filters_screen.dart';
@@ -9,12 +8,6 @@ import 'package:meal_app/providers/favorite_meals_provider.dart';
     import 'package:meal_app/widgets/main_drawer.dart';
     // import 'package:meal_app/models/meal.dart';
 
-
-    const kInitialFilters = {
-      Filter.gluttonFree: false,
-      Filter.lactoseFree: false,
-      Filter.vegetarian: false,
-    };
 
     class TabsScreen extends ConsumerStatefulWidget {
       const TabsScreen({super.key});
@@ -25,9 +18,8 @@ import 'package:meal_app/providers/favorite_meals_provider.dart';
 
     class _TabsScreenState extends ConsumerState<TabsScreen> {
       int _selectedPageIndex = 0;
-      Widget activePage = CategoriesScreen(null);
+      Widget activePage = CategoriesScreen();
       String activePageTitle = 'Categories';
-        Map<Filter, bool> _selectedFilters = kInitialFilters;
 
 
       void _selectPage(int index) {
@@ -41,7 +33,7 @@ import 'package:meal_app/providers/favorite_meals_provider.dart';
             );
             activePageTitle = 'Favorites';
           } else {
-            activePage = CategoriesScreen(null);
+            activePage = CategoriesScreen();
             activePageTitle = 'Categories';
           }
         });
@@ -55,25 +47,25 @@ import 'package:meal_app/providers/favorite_meals_provider.dart';
         Navigator.of(context).pop();
 
         if (identifier == 'filter') {
-          final result = await Navigator.of(context).push<Map<Filter, bool>>(
-            MaterialPageRoute(builder: (ctx) => FiltersScreen(selectedFilters: _selectedFilters)),
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (ctx) => const FiltersScreen()),
           );
-
-          setState(() {
-            _selectedFilters = result ?? {
-                        Filter.gluttonFree: false,
-                        Filter.lactoseFree: false,
-                        Filter.vegetarian: false,
-                      };
-            activePage = CategoriesScreen(_selectedFilters);
-            activePageTitle = 'Categories';
-            _selectedPageIndex = 0;
-          });
+  
+          // setState(() {
+          //   _selectedFilters = result ?? {
+          //               Filter.gluttonFree: false,
+          //               Filter.lactoseFree: false,
+          //               Filter.vegetarian: false,
+          //             };
+          //   activePage = CategoriesScreen(_selectedFilters);
+          //   activePageTitle = 'Categories';
+          //   _selectedPageIndex = 0;
+          // });
         }
 
         if (identifier == 'meal') {
           setState(() {
-            activePage = CategoriesScreen(_selectedFilters);
+            activePage = CategoriesScreen();
             activePageTitle = 'Categories';
             _selectedPageIndex = 0;
           });

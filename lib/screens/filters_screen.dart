@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meal_app/models/filters.dart';
+import 'package:meal_app/providers/filters_provider.dart';
 
-
-class FiltersScreen extends StatefulWidget {
-  const FiltersScreen({super.key, required this.selectedFilters});
-
-  final Map<Filter, bool> selectedFilters;
+class FiltersScreen extends ConsumerStatefulWidget {
+  const FiltersScreen({super.key});
 
   @override
-  State<FiltersScreen> createState() => _FiltersScreenState();
+  ConsumerState<FiltersScreen> createState() => _FiltersScreenState();
 }
 
-class _FiltersScreenState extends State<FiltersScreen> {
-
+class _FiltersScreenState extends ConsumerState<FiltersScreen> {
   var _gluttonFreeFilterSet = false;
   var _lactoseFreeFilterSet = false;
   var _vegetarianFreeFilterSet = false;
 
-
   @override
   void initState() {
     super.initState();
-    _gluttonFreeFilterSet = widget.selectedFilters[Filter.gluttonFree] ?? false;
-    _lactoseFreeFilterSet = widget.selectedFilters[Filter.lactoseFree] ?? false;
-    _vegetarianFreeFilterSet = widget.selectedFilters[Filter.vegetarian] ?? false;
+    final activeFilters = ref.read(filtersProvider);
+    _gluttonFreeFilterSet = activeFilters[Filter.gluttonFree] ?? false;
+    _lactoseFreeFilterSet = activeFilters[Filter.lactoseFree] ?? false;
+    _vegetarianFreeFilterSet = activeFilters[Filter.vegetarian] ?? false;
   }
 
   @override
@@ -33,17 +31,18 @@ class _FiltersScreenState extends State<FiltersScreen> {
       body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
-          Navigator.of(context).pop({
+          ref.read(filtersProvider.notifier).setFilters({
             Filter.gluttonFree: _gluttonFreeFilterSet,
             Filter.lactoseFree: _lactoseFreeFilterSet,
-            Filter.vegetarian:  _vegetarianFreeFilterSet
+            Filter.vegetarian: _vegetarianFreeFilterSet,
           });
+          Navigator.of(context).pop();
         },
         child: Column(
           children: [
             SwitchListTile(
               value: _gluttonFreeFilterSet,
-              onChanged: (isChecked) { 
+              onChanged: (isChecked) {
                 setState(() {
                   _gluttonFreeFilterSet = isChecked;
                 });
@@ -60,12 +59,14 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              activeThumbColor: Theme.of(context).colorScheme.onPrimaryContainer,
-              contentPadding: EdgeInsets.only(left: 34, right: 22 ),
+              activeThumbColor: Theme.of(
+                context,
+              ).colorScheme.onPrimaryContainer,
+              contentPadding: EdgeInsets.only(left: 34, right: 22),
             ),
             SwitchListTile(
               value: _lactoseFreeFilterSet,
-              onChanged: (isChecked) { 
+              onChanged: (isChecked) {
                 setState(() {
                   _lactoseFreeFilterSet = isChecked;
                 });
@@ -82,12 +83,14 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              activeThumbColor: Theme.of(context).colorScheme.onPrimaryContainer,
-              contentPadding: EdgeInsets.only(left: 34, right: 22 ),
+              activeThumbColor: Theme.of(
+                context,
+              ).colorScheme.onPrimaryContainer,
+              contentPadding: EdgeInsets.only(left: 34, right: 22),
             ),
             SwitchListTile(
               value: _vegetarianFreeFilterSet,
-              onChanged: (isChecked) { 
+              onChanged: (isChecked) {
                 setState(() {
                   _vegetarianFreeFilterSet = isChecked;
                 });
@@ -104,8 +107,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              activeThumbColor: Theme.of(context).colorScheme.onPrimaryContainer,
-              contentPadding: EdgeInsets.only(left: 34, right: 22 ),
+              activeThumbColor: Theme.of(
+                context,
+              ).colorScheme.onPrimaryContainer,
+              contentPadding: EdgeInsets.only(left: 34, right: 22),
             ),
           ],
         ),

@@ -1,44 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:meal_app/data/dummy_data.dart';
 import 'package:meal_app/models/category.dart';
 import 'package:meal_app/models/filters.dart';
-import 'package:meal_app/models/meal.dart';
+import 'package:meal_app/providers/filters_provider.dart';
 import 'package:meal_app/screens/meals.dart';
 
-class CategoryGridItem extends StatelessWidget {
-  const CategoryGridItem({
-    super.key,
-    required this.category,
-    required this.filters,
-  });
+class CategoryGridItem extends ConsumerWidget {
+  const CategoryGridItem({super.key, required this.category});
 
   final Category category;
-  final Map<Filter, bool> filters;
 
-  List<Meal> get filteredMeals{
+  // List<Meal> get filteredMeals{
 
-    return dummyMeals.where((meal) {
-
-      if(!meal.categories.contains(category.id)) return false;
-      if(filters[Filter.gluttonFree]! && !meal.isGlutenFree) return false;
-      if(filters[Filter.lactoseFree]! && !meal.isLactoseFree) return false;
-      if(filters[Filter.vegetarian]! && !meal.isVegetarian) return false;
-
-      return true;
-    }).toList();
-
-  }
+  // }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (ctx) => MealsScreen(
               title: category.title,
-              meals: filteredMeals,
+              meals: dummyMeals.where((meal) {
+                final activeFilters = ref.watch(filtersProvider);
+                if (!meal.categories.contains(category.id)) return false;
+                if (activeFilters[Filter.gluttonFree]! && !meal.isGlutenFree) {
+                  return false;
+                }
+                if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+                  return false;
+                }
+                if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+                  return false;
+                }
+
+                return true;
+              }).toList(),
             ),
           ),
         );

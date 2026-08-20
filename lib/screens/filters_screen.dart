@@ -19,7 +19,7 @@ class FiltersScreen extends ConsumerWidget {
                   ref.read(filtersProvider.notifier).setFilter(Filter.gluttonFree, isChecked);
               },
               title: Text(
-                'Glute-Free',
+                'Glutton-Free',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
